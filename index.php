@@ -1,108 +1,96 @@
+
 <?php
-    $myName = "hanna";
-    $servername = "localhost";
-    $username = "root";
-    $password = "";
-    $dbname = "todolist";
+// Database credentials
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "firstphpwithc#";
 
-    $conn = new mysqli($servername, $username, $password, $dbname);
-    if ($conn->connect_errno) {
-      die("Failed to connect to MySQL: " . $conn->connect_error);
+// Create a connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Check if the request is a GET request
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    // SQL query to retrieve all data from the users table
+    $sql = "SELECT * FROM users";
+    $result = $conn->query($sql);
+
+    // Check if any rows were returned
+    if ($result->num_rows > 0) {
+        // Create an array to store the result
+        $data = array();
+
+        // Loop through each row
+        while ($row = $result->fetch_assoc()) {
+            // Add each row to the data array
+            $data[] = $row;
+        }
+
+        // Convert the data array to JSON
+        $json = json_encode($data);
+
+        // Return the JSON response
+        header('Content-Type: application/json');
+        echo $json;
+    } else {
+        echo "No data found in the users table.";
     }
+} else {
+    echo "Invalid request method.";
+}
 
-
-    if(isset($_POST["submit"])){
-        $txt = $_POST["txt"];
-       
-        $query = "INSERT INTO todolistphp (txt) VALUES('$txt')";
-        mysqli_query($conn,$query);
-        echo
-        "
-        <script> alert('Data Inserted Successfully'); </script>
-        ";
-    }
-
-    if (isset($_POST["delete"])) {
-        $id = $_POST["delete"];
-        $query = "DELETE FROM todolistphp WHERE id = $id";
-        mysqli_query($conn, $query);
-        echo "<script>alert('Data Deleted Successfully');</script>";
-    }
-      
+// Close the connection
+$conn->close();
 ?>
 
 
 
-<!DOCTYPE html>
-<html>
-<head>
-  <title>To-Do List</title>
-  <style>
-    table {
-      border-collapse: collapse;
-      width: 100%;
-    }
-    th, td {
-      padding: 8px;
-      text-align: left;
-      border-bottom: 1px solid #ddd;
-    }
-    input[type=text] {
-      width: 100%;
-      padding: 12px 20px;
-      margin: 8px 0;
-      box-sizing: border-box;
-    }
-    button {
-      background-color: #4CAF50;
-      color: white;
-      padding: 14px 20px;
-      border: none;
-      cursor: pointer;
-      width: 100%;
-    }
-    button:hover {
-      opacity: 0.8;
-    }
-    .delete{
-        background-color: red;
-        width: 150px;
-    }
-  </style>
-</head>
-<body>
-  <h1>To-Do List</h1>
-  <form  action="" method="post" autocomplete="off">
-    <label for="item">New Item:</label>
-    <input type="text" id="item" name="txt"  required value="" placeholder="Enter new to-do item...">
-    <button type="submit" name="submit">Submit</button>
-  </form>
-  <br>
-  <table>
-    <tr>
-      <th>ID</th>
-      <th>Item</th>
-    </tr>
-    <?php
-    // Connect to database
-    $mysqli = new mysqli($servername, $username, $password, $dbname);
-    if ($mysqli->connect_errno) {
-      die("Failed to connect to MySQL: " . $mysqli->connect_error);
-    }
+<?php
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "firstphpwithc#";
 
-    // Retrieve to-do items from database
-    $result = $mysqli->query("SELECT * FROM todolistphp");
-    if ($result->num_rows > 0) {
-      while ($row = $result->fetch_assoc()) {
-        echo "<tr><td>" . $row["id"] . "</td><td>" . $row["txt"] . "</td><td>  <form  method='post'><button   type='submit' name='delete' value=" . $row["id"] . " class=delete>Delete</button></form> </td></tr>";
-      }
+// Create a connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check the connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Check if the request method is POST
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Get the JSON data from the request body
+    $json_data = file_get_contents('php://input');
+    
+    // Decode the JSON data into an associative array
+    $data = json_decode($json_data, true);
+
+    // Extract the values from the array
+    $name = $data['name'] ?? '';
+    $userName = $data['userName'] ?? '';
+    $email = $data['email'] ?? '';
+    $password = $data['password'] ?? '';
+
+    // Prepare the SQL statement
+    $sql = "INSERT INTO users (name, userName, email, password) VALUES ('$name', '$userName', '$email', '$password')";
+
+    // Execute the query
+    if ($conn->query($sql) === TRUE) {
+        echo "New record inserted successfully";
     } else {
-      echo "<tr><td colspan='2'>No items found.</td></tr>";
+        echo "Error: " . $sql . "<br>" . $conn->error;
     }
+}
 
-    // Close database connection
-    $mysqli->close();
-    ?>
-  </table>
-</body>
-</html>
+// Close the connection
+$conn->close();
+?>
+
+
