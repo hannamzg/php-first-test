@@ -50,47 +50,5 @@ $conn->close();
 
 
 
-<?php
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "firstphpwithc#";
-
-// Create a connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Check the connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
-// Check if the request method is POST
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Get the JSON data from the request body
-    $json_data = file_get_contents('php://input');
-    
-    // Decode the JSON data into an associative array
-    $data = json_decode($json_data, true);
-
-    // Extract the values from the array
-    $name = $data['name'] ?? '';
-    $userName = $data['userName'] ?? '';
-    $email = $data['email'] ?? '';
-    $password = $data['password'] ?? '';
-
-    // Prepare the SQL statement
-    $sql = "INSERT INTO users (name, userName, email, password) VALUES ('$name', '$userName', '$email', '$password')";
-
-    // Execute the query
-    if ($conn->query($sql) === TRUE) {
-        echo "New record inserted successfully";
-    } else {
-        echo "Error: " . $sql . "<br>" . $conn->error;
-    }
-}
-
-// Close the connection
-$conn->close();
-?>
 
 

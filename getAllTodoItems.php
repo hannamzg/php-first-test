@@ -19,35 +19,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Decode the JSON data into an associative array
     $data = json_decode($json_data, true);
 
-    $text = $data['text'] ?? '';
-    $itemId = $data['itemId'] ?? '';
+    $userId = $data["userId"] ?? '';
 
-    if (!empty($itemId)) {
-        // Update existing item
-        $sql = "UPDATE `todolist` SET `text` = '$text' WHERE `itemId` = '$itemId' ";
-    } else {
-        // Insert new item
-        echo "proplem";
 
-    }
-
-    // Execute the query
-    $result = $conn->query($sql);
-    
-    if ($result === true) {
-        echo "has been edit";
-    }
-    else{
-        echo "proplem2";
- 
-    }
-/* 
-    if ($result === true) {
-        // Query executed successfully
-
-        // Retrieve all items for the specified $userId
-        $selectSql = "SELECT * FROM `todolist` WHERE `userId` = '$userId'";
-        $selectResult = $conn->query($selectSql);
+    $selectSql = "SELECT * FROM `todolist` WHERE `userId` = '$userId'";
+    $selectResult = $conn->query($selectSql);
 
         if ($selectResult->num_rows > 0) {
             // Fetch all the rows and store them in an array
@@ -65,8 +41,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         // Query execution failed
         echo "Problem: " . $conn->error;
-    } */
-}
+    }
+
 
 // Close the connection
 $conn->close();
